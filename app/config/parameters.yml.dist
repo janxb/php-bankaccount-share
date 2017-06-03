@@ -15,5 +15,11 @@ parameters:
     mailer_user: ~
     mailer_password: ~
 
+    bank_hbci_url: ~
+    bank_code: ~
+    bank_online_username: ~
+    bank_online_password: ~
+    bank_accountnumber: ~
+
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
