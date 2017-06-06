@@ -19,6 +19,7 @@ class Roommate
         if (!in_array($name, $this->names)) {
             array_push($this->names, $name);
         }
+        return $this;
     }
 
     public function getFirstName()
