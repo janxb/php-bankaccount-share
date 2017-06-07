@@ -44,9 +44,12 @@ class BankAccount
     public function getTransactions(DateTime $dateStart, DateTime $dateEnd)
     {
         $transactions = new TransactionCollection();
-        $statementOfAccount = $this->finTs->getStatementOfAccount($this->account, $dateStart, $dateEnd);
+        $statementOfAccount = $this->finTs->getStatementOfAccount(
+            $this->account, $dateStart, $this->trimDateNotAfterNow($dateEnd));
         foreach ($statementOfAccount->getStatements() as $statement) {
             foreach ($statement->getTransactions() as $hbciTransaction) {
+                if ($this->isDateAfterDeadline($hbciTransaction->getBookingDate(), $dateEnd))
+                    continue;
                 $transaction = new Transaction(
                     FintsAbsoluteAmountConverter::getAbsoluteAmount($hbciTransaction),
                     $hbciTransaction->getName(),
@@ -57,5 +60,17 @@ class BankAccount
             }
         }
         return $transactions;
+    }
+
+    private function isDateAfterDeadline(DateTime $date, DateTime $deadline)
+    {
+        return $deadline < $date;
+    }
+
+    private function trimDateNotAfterNow(DateTime $date)
+    {
+        if ($date > new DateTime())
+            return new DateTime();
+        else return $date;
     }
 }
