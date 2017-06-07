@@ -6,7 +6,7 @@
  * Time: 08:35
  */
 
-namespace Tests\AppBundle\Controller;
+namespace Tests\AppBundle;
 
 
 use AppBundle\Entity\Roommate;
