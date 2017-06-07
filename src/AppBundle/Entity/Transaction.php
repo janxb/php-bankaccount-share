@@ -19,7 +19,7 @@ class Transaction implements IEquals
     private $description;
     private $date;
 
-    public function __construct(int $amount, string $recipient, DateTime $date, string $description = null)
+    public function __construct(float $amount, string $recipient, DateTime $date, string $description = null)
     {
         $this->amount = $amount;
         $this->recipient = $recipient;
@@ -28,9 +28,9 @@ class Transaction implements IEquals
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getAmount(): int
+    public function getAmount(): float
     {
         return $this->amount;
     }
