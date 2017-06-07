@@ -16,6 +16,7 @@ class RoommateTransactionHolder
 
     private $roommateAmountMap = [];
     private $roommateTransactionMap = [];
+    private $unidentifiedAmount = 0.0;
 
     /**
      * RoommateTransactionHolder constructor.
@@ -35,12 +36,15 @@ class RoommateTransactionHolder
         });
 
         $this->transactions->each(function (Transaction $transaction) {
-            $this->roommates->each(function (Roommate $roommate) use ($transaction) {
+            $tmpUnidentifiedAmount = $transaction->getAmount();
+            $this->roommates->each(function (Roommate $roommate) use ($transaction, &$tmpUnidentifiedAmount) {
                 if ($roommate->isNameMatching($transaction->getRecipient())) {
                     $this->roommateAmountMap[$roommate->getIdentifier()] += $transaction->getAmount();
                     $this->roommateTransactionMap[$roommate->getIdentifier()][] = $transaction;
+                    $tmpUnidentifiedAmount = 0.0;
                 }
             });
+            $this->unidentifiedAmount += $tmpUnidentifiedAmount;
         });
     }
 
@@ -49,13 +53,21 @@ class RoommateTransactionHolder
         return $this->roommateAmountMap[$roommate->getIdentifier()];
     }
 
-    public function getMappedTransactionsForRoommate(Roommate $roommate)
+    public function getTransactionsForRoommate(Roommate $roommate)
     {
         return $this->roommateTransactionMap[$roommate->getIdentifier()];
     }
 
-    public function getAllMappedTransactions()
+    public function getAllTransactions()
     {
         return $this->roommateTransactionMap;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUnidentifiedAmount(): float
+    {
+        return $this->unidentifiedAmount;
     }
 }
