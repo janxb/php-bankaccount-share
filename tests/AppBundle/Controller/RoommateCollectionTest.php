@@ -17,8 +17,8 @@ class RoommateCollectionTest extends TestCase
 {
     private function prepareCollection()
     {
-        $roommateOne = (new Roommate())->addName('First Mate');
-        $roommateTwo = (new Roommate())->addName('Second Mate');
+        $roommateOne = (new Roommate("firstMate"))->addName('First Mate');
+        $roommateTwo = (new Roommate("secondMate"))->addName('Second Mate');
         $roommateCollection = (new RoommateCollection())
             ->add($roommateOne)
             ->add($roommateTwo);
@@ -41,8 +41,8 @@ class RoommateCollectionTest extends TestCase
     public function testContains()
     {
         $roommateCollection = $this->prepareCollection();
-        self::assertTrue($roommateCollection->contains((new Roommate())->addName('Second Mate')));
-        self::assertFalse($roommateCollection->contains((new Roommate())->addName('Third Mate')));
+        self::assertTrue($roommateCollection->contains(new Roommate("firstMate")));
+        self::assertFalse($roommateCollection->contains(new Roommate("thirdMate")));
     }
 
     public function testClear()

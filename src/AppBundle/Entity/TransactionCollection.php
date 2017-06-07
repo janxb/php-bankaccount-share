@@ -11,11 +11,11 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Abstr\AbstractCollection;
 
-class RoommateCollection extends AbstractCollection
+class TransactionCollection extends AbstractCollection
 {
     protected function validateType($value)
     {
-        if (!$value instanceof Roommate)
+        if (!$value instanceof Transaction)
             throw new \InvalidArgumentException();
     }
 }

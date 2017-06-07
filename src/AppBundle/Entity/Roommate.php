@@ -9,10 +9,18 @@
 namespace AppBundle\Entity;
 
 
-class Roommate
+use AppBundle\Entity\Abstr\IEquals;
+
+class Roommate implements IEquals
 {
     /** @var  string[] */
     private $names = [];
+    private $identifier;
+
+    public function __construct(string $identifier)
+    {
+        $this->identifier = $identifier;
+    }
 
     public function addName(string $name)
     {
@@ -22,11 +30,6 @@ class Roommate
         return $this;
     }
 
-    public function getFirstName()
-    {
-        return $this->names[0];
-    }
-
     public function isNameMatching(string $givenName)
     {
         foreach ($this->names as $name) {
@@ -34,5 +37,23 @@ class Roommate
                 return true;
         }
         return false;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @param IEquals $other
+     * @return bool
+     */
+    public function equals(IEquals $other)
+    {
+        if ($other instanceof Roommate &&
+            $other->getIdentifier() === $this->identifier
+        )
+            return true;
+        else return false;
     }
 }
