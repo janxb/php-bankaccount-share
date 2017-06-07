@@ -20,12 +20,13 @@ class Roommate implements IEquals
     public function __construct(string $identifier)
     {
         $this->identifier = $identifier;
+        $this->names[] = $identifier;
     }
 
     public function addName(string $name)
     {
         if (!in_array($name, $this->names)) {
-            array_push($this->names, $name);
+            $this->names[] = $name;
         }
         return $this;
     }
