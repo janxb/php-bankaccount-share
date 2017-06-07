@@ -2,10 +2,10 @@
 
 namespace AppBundle\Controller;
 
-use Fhp\FinTs;
-use Fhp\Model\SEPAAccount;
-use Fhp\Model\StatementOfAccount\Statement;
-use Fhp\Model\StatementOfAccount\Transaction;
+use AppBundle\Component\AccountShare;
+use AppBundle\Entity\BankAccount;
+use AppBundle\Entity\MonthYear;
+use AppBundle\Entity\Roommate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,33 +18,26 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $fints = new FinTs(
-            $this->getParameter('bank_hbci_url'),
-            443,
+        $bankAccount = new BankAccount(
+            $this->getParameter('bank_accountnumber'),
             $this->getParameter('bank_code'),
+            $this->getParameter('bank_hbci_url'),
             $this->getParameter('bank_online_username'),
             $this->getParameter('bank_online_password')
         );
-        $accounts = $fints->getSEPAAccounts();
-        $oneAccount = null;
-        foreach ($accounts as $account) {
-            if ($account->getAccountNumber() == $this->getParameter('bank_accountnumber')) {
-                $oneAccount = $account;
-                break;
-            }
-        }
-        $from = new \DateTime('2016-01-01');
-        $to = new \DateTime();
-        $soa = $fints->getStatementOfAccount($oneAccount, $from, $to);
 
-        echo '<pre>';
-        foreach ($soa->getStatements() as $statement) {
-            foreach ($statement->getTransactions() as $transaction) {
-                echo $transaction->getBookingDate()->format('d.m.Y') . ' - ' . $transaction->getAmount() . ' - ' . $transaction->getDescription1();
-                echo "\n";
-            }
-        }
-        echo '</pre>';
+        $accountShare = new AccountShare($bankAccount);
+        $accountShare->addRoommate(new Roommate("Jan Brodda"));
+        $accountShare->addRoommate(new Roommate("Nick Brodda"));
+
+        $month6 = new MonthYear(6, 2017);
+        $month5 = new MonthYear(5, 2017);
+        $month4 = new MonthYear(4, 2017);
+        $month3 = new MonthYear(3, 2017);
+
+        dump($accountShare->process($month6->getFirstDateTime(), $month6->getLastDateTime())->getRoommateAmounts());
+        dump($accountShare->process($month5->getFirstDateTime(), $month5->getLastDateTime())->getRoommateAmounts());
+
 
         return new Response();
     }
