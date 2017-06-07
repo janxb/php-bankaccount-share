@@ -15,6 +15,7 @@ class RoommateTransactionHolder
     private $transactions;
 
     private $roommateAmountMap = [];
+    private $roommateTransactionMap = [];
 
     /**
      * RoommateTransactionHolder constructor.
@@ -37,6 +38,7 @@ class RoommateTransactionHolder
             $this->roommates->each(function (Roommate $roommate) use ($transaction) {
                 if ($roommate->isNameMatching($transaction->getRecipient())) {
                     $this->roommateAmountMap[$roommate->getIdentifier()] += $transaction->getAmount();
+                    $this->roommateTransactionMap[$roommate->getIdentifier()][] = $transaction;
                 }
             });
         });
@@ -45,5 +47,15 @@ class RoommateTransactionHolder
     public function getAmountForRoommate(Roommate $roommate)
     {
         return $this->roommateAmountMap[$roommate->getIdentifier()];
+    }
+
+    public function getMappedTransactionsForRoommate(Roommate $roommate)
+    {
+        return $this->roommateTransactionMap[$roommate->getIdentifier()];
+    }
+
+    public function getAllMappedTransactions()
+    {
+        return $this->roommateTransactionMap;
     }
 }
